@@ -6,21 +6,21 @@ namespace ServiceBusDemo
 {
     public class Sender
     {
-        private readonly AppSettings _settings;
-        private readonly ServiceBusClient _client;
-        private readonly ServiceBusSender _sender;
+        private readonly AppSettings settings;
+        private readonly ServiceBusClient client;
+        private readonly ServiceBusSender sender;
 
         public Sender()
         {
-            _settings = ConfigurationHelper.LoadSettings();
-            _client = new ServiceBusClient(_settings.ConnectionString);
-            _sender = _client.CreateSender(_settings.QueueName);
+            settings = ConfigurationHelper.LoadSettings();
+            client = new ServiceBusClient(settings.ConnectionString);
+            sender = client.CreateSender(settings.QueueName);
         }
 
         public async Task SendMessagesAsync()
         {
             Console.WriteLine("=== Azure Service Bus Sender Demo ===");
-            Console.WriteLine($"Connecting to queue: {_settings.QueueName}");
+            Console.WriteLine($"Connecting to queue: {settings.QueueName}");
             Console.WriteLine();
 
             try
@@ -34,8 +34,8 @@ namespace ServiceBusDemo
             }
             finally
             {
-                await _sender.DisposeAsync();
-                await _client.DisposeAsync();
+                await sender.DisposeAsync();
+                await client.DisposeAsync();
             }
 
             Console.WriteLine("\nPress any key to exit...");
@@ -68,7 +68,7 @@ namespace ServiceBusDemo
                 message.ApplicationProperties.Add("MessageType", "Individual");
                 message.ApplicationProperties.Add("Priority", "Normal");
 
-                await _sender.SendMessageAsync(message);
+                await sender.SendMessageAsync(message);
                 Console.WriteLine($"✓ Message {i} sent - ID: {messageData.Id}");
 
                 await Task.Delay(1000);
@@ -81,7 +81,7 @@ namespace ServiceBusDemo
         {
             Console.WriteLine("--- Sending Batch Messages ---");
 
-            using var messageBatch = await _sender.CreateMessageBatchAsync();
+            using var messageBatch = await sender.CreateMessageBatchAsync();
 
             for (int i = 1; i <= 5; i++)
             {
@@ -116,7 +116,7 @@ namespace ServiceBusDemo
 
             if (messageBatch.Count > 0)
             {
-                await _sender.SendMessagesAsync(messageBatch);
+                await sender.SendMessagesAsync(messageBatch);
                 Console.WriteLine($"✓ Batch sent with {messageBatch.Count} messages");
             }
 
