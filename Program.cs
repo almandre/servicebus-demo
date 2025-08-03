@@ -5,6 +5,7 @@ Console.WriteLine();
 Console.WriteLine("Choose an option:");
 Console.WriteLine("1 - Run Sender (Send messages)");
 Console.WriteLine("2 - Run Receiver (Receive messages)");
+Console.WriteLine("3 - Run Scheduled Message");
 Console.WriteLine("0 - Exit");
 Console.WriteLine();
 Console.Write("Enter your choice: ");
@@ -17,14 +18,19 @@ switch (option)
         Console.Clear();
         var sender = new Sender();
         await sender.SendMessagesAsync();
-        break;
-        
+        break;        
     case "2":
         Console.Clear();
         var receiver = new Receiver();
         await receiver.ReceiveMessagesAsync();
         break;
-        
+    case "3":
+        Console.Clear();
+        var scheduledMessage = new ScheduledMessage();
+        await scheduledMessage.SendScheduledMessagesAsync();
+        var receiverScheduledMessage = new Receiver();
+        await receiverScheduledMessage.ReceiveMessagesAsync();
+        break;
     case "0":
         Console.WriteLine("Exiting...");
         break;
